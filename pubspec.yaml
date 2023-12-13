@@ -1,0 +1,24 @@
+name: daftar_belanja
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  crypt: ^4.3.1
+  flutter:
+    sdk: flutter
+  mysql1: ^0.20.0
+  string_validator: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

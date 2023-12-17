@@ -27,6 +27,7 @@
 */
 
 // import file database_settings.dart, berisi konfigurasi untuk terhubung ke database MySQL
+import 'package:daftar_belanja/settings/currency_settings.dart';
 import 'package:daftar_belanja/settings/database_settings.dart';
 
 // import package mysql1, agar program dart dapat berinteraksi dengan database MySQL
@@ -103,14 +104,14 @@ class Barang {
     } else {
       MySqlConnection koneksi = await MySqlConnection.connect(settingsDB);
 
-      Results hasil = await koneksi.query("DELETE FROM barang WHERE id = ?", [_idBarang]);
-
       DateTime update = DateTime.now();
 
       Results hasil2 = await koneksi.query(
           "UPDATE daftar_barang SET daftar_barang.date_updated = ? WHERE daftar_barang.id = (SELECT barang.daftar_id FROM barang WHERE barang.id = ?)",
           [update.toIso8601String(), _idBarang]
       );
+
+      Results hasil = await koneksi.query("DELETE FROM barang WHERE id = ?", [_idBarang]);
 
       await koneksi.close();
 
@@ -131,7 +132,7 @@ class Barang {
     Map<String, dynamic> detail = {
       "ID": _idBarang,
       "Nama": _nama,
-      "Harga": _harga,
+      "Harga":currencyConverter.format(_harga),
       "Deskripsi": (_deskripsi == 'null') ? '-' : _deskripsi,
       "Kategori": _kategori,
       "Kuantitas": _kuantitas,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:daftar_belanja/view/login_and_register.dart';
 
 
 class LoginAs extends StatelessWidget {
@@ -20,13 +21,15 @@ class LoginAs extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 242, 242, 242),
-                  borderRadius: const BorderRadius.only(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 242, 242, 242),
+                  borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16.0),
                     topRight: Radius.circular(16.0)
                   ),
-                  border: Border.all(color: const Color.fromARGB(255, 98, 212, 116))
+                  border: Border(
+                    top: BorderSide(color: Color.fromARGB(255, 98, 212, 116)),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,13 +46,15 @@ class LoginAs extends StatelessWidget {
                     ),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          borderRadius: const BorderRadius.only(
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16.0),
                             topRight: Radius.circular(16.0)
                           ),
-                          border: Border.all(color: const Color.fromARGB(255, 217, 217, 217))
+                          border: Border(
+                            top: BorderSide(color: Color.fromARGB(255, 217, 217, 217)),
+                          ),
                         ),
                         child: Column(
                           children: [
@@ -59,7 +64,8 @@ class LoginAs extends StatelessWidget {
                             ),
                             OutlinedButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/login-or-register');
+                                String userType = 'CommonUser';
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginOrRegister(userType: userType)));
                               },
                               style: OutlinedButton.styleFrom(
                                 fixedSize: const Size(220, 36),
@@ -72,7 +78,8 @@ class LoginAs extends StatelessWidget {
                             const SizedBox(height: 20.0),
                             OutlinedButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/login-or-register');
+                                String userType = 'Seller';
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginOrRegister(userType: userType)));
                               },
                               style: OutlinedButton.styleFrom(
                                 fixedSize: const Size(220, 36),

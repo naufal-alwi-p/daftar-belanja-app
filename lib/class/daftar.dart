@@ -28,6 +28,7 @@
 
 // import file barang.dart
 import 'package:daftar_belanja/class/barang.dart';
+import 'package:daftar_belanja/settings/currency_settings.dart';
 
 // import file database_settings.dart, berisi konfigurasi untuk terhubung ke database MySQL
 import 'package:daftar_belanja/settings/database_settings.dart';
@@ -69,22 +70,7 @@ abstract class Daftar {
 
   /// Mengubah format waktu bawaan dart ke format waktu yang mudah dibaca manusia
   String _dateParse(DateTime time) {
-    List<String> bulan = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember'
-    ];
-
-    return "${time.day} ${bulan[time.month - 1]} ${time.year} ${time.hour}:${time.minute}:${time.second}";
+    return "${time.day}/${time.month}/${time.year}";
   }
 }
 
@@ -142,13 +128,22 @@ class DaftarBelanja extends Daftar {
   }
 
   /// Hitung total harga semua barang di dalam daftar belanja
-  Future<int> hitungTotalHarga() async {
-    List<Barang> listBarang = await getAllBarang();
-
+  String hitungTotalHarga(List<Barang> listBarang) {
     int total = 0;
 
     for (Barang barang in listBarang) {
       total += barang.kuantitas * barang.harga;
+    }
+
+    return currencyConverter.format(total);
+  }
+
+  /// Hitung Jumlah barang
+  int hitungJumlahBarang(List<Barang> listBarang) {
+    int total = 0;
+
+    for (Barang barang in listBarang) {
+      total += barang.kuantitas;
     }
 
     return total;
@@ -173,7 +168,7 @@ class DaftarBelanja extends Daftar {
 
       if (hasil.affectedRows == 1) {
         _namaDaftar = nama;
-        _dateUpdated = _dateParse(DateTime.parse(date.fields[0].toString()));
+        _dateUpdated = _dateParse(DateTime.parse(date.first.first.toString()));
 
         return true;
       } else if (hasil.affectedRows == 0) {

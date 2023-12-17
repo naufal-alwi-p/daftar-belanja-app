@@ -1,7 +1,11 @@
+import 'package:daftar_belanja/view/register_form.dart';
 import 'package:flutter/material.dart';
+import 'package:daftar_belanja/view/login_form.dart';
+import 'package:daftar_belanja/class/user.dart';
 
 class LoginOrRegister extends StatelessWidget {
-  const LoginOrRegister({super.key});
+  final String userType;
+  const LoginOrRegister({super.key, required this.userType});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +23,15 @@ class LoginOrRegister extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 242, 242, 242),
-                  borderRadius: const BorderRadius.only(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 242, 242, 242),
+                  borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16.0),
                     topRight: Radius.circular(16.0)
                   ),
-                  border: Border.all(color: const Color.fromARGB(255, 98, 212, 116))
+                  border: Border(
+                    top: BorderSide(color: Color.fromARGB(255, 98, 212, 116)),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -42,13 +48,15 @@ class LoginOrRegister extends StatelessWidget {
                     ),
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          borderRadius: const BorderRadius.only(
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16.0),
                             topRight: Radius.circular(16.0)
                           ),
-                          border: Border.all(color: const Color.fromARGB(255, 217, 217, 217))
+                          border: Border(
+                            top: BorderSide(color: Color.fromARGB(255, 217, 217, 217)),
+                          ),
                         ),
                         child: Column(
                           children: [
@@ -57,7 +65,15 @@ class LoginOrRegister extends StatelessWidget {
                               child: Text('Sudah punya akun?'),
                             ),
                             OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                if (userType == 'CommonUser') {
+                                  CommonUser user = CommonUser();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginForm(user: user)));
+                                } else if (userType == 'Seller') {
+                                  Seller seller = Seller();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginForm(seller: seller)));
+                                }
+                              },
                               style: OutlinedButton.styleFrom(
                                 fixedSize: const Size(220, 36),
                               ),
@@ -68,7 +84,15 @@ class LoginOrRegister extends StatelessWidget {
                             ),
                             const SizedBox(height: 20.0),
                             OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                if (userType == 'CommonUser') {
+                                  CommonUser user = CommonUser();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterForm(user: user)));
+                                } else if (userType == 'Seller') {
+                                  Seller seller = Seller();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterForm(seller: seller)));
+                                }
+                              },
                               style: OutlinedButton.styleFrom(
                                 fixedSize: const Size(220, 36),
                               ),

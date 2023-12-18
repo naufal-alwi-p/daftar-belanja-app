@@ -19,6 +19,7 @@ class _HomePageCommonUserState extends State<HomePageCommonUser> {
 
   Map dataUser = {};
   List<DaftarBelanja> listDaftarBelanja = [];
+  String notifikasiListKosong = '';
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _HomePageCommonUserState extends State<HomePageCommonUser> {
     widget.user.getAllDaftarBelanja().then((value) {
       setState(() {
         listDaftarBelanja = value;
+        notifikasiListKosong = (value.isEmpty) ? 'Tidak Ada Daftar Belanja' : '';
       });
     });
   }
@@ -107,6 +109,7 @@ class _HomePageCommonUserState extends State<HomePageCommonUser> {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
+                                  fontSize: 13.0
                                 ),
                               ),
                             ),
@@ -139,125 +142,127 @@ class _HomePageCommonUserState extends State<HomePageCommonUser> {
                                 ),
                               ),
                               Expanded(
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                  itemCount: listDaftarBelanja.length,
-                                  itemBuilder: (context, index) {
-                                    DaftarBelanja daftarBelanja = listDaftarBelanja[index];
-                                    List data = daftarBelanja.getAttributes();
-                          
-                                    return Card(
-                                      clipBehavior: Clip.antiAlias,
-                                      child: ListTile(
-                                        title: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              data[0],
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
+                                child: (listDaftarBelanja.isNotEmpty) ?
+                                  ListView.builder(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    itemCount: listDaftarBelanja.length,
+                                    itemBuilder: (context, index) {
+                                      DaftarBelanja daftarBelanja = listDaftarBelanja[index];
+                                      List data = daftarBelanja.getAttributes();
+                            
+                                      return Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: ListTile(
+                                          title: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                data[0],
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ),
-                                            PopupMenuButton(
-                                              itemBuilder: (context) {
-                                                return [
-                                                  const PopupMenuItem(
-                                                    value: 0,
-                                                    child: Text('Edit'),
-                                                  ),
-                                                  const PopupMenuItem(
-                                                    value: 1,
-                                                    child: Text('Hapus', style: TextStyle(color: Colors.red),),
-                                                  ),
-                                                ];
-                                              },
-                                              onSelected: (value) async {
-                                                switch (value) {
-                                                  case 0:
-                                                    final NavigatorState navigatorContext = Navigator.of(context);
+                                              PopupMenuButton(
+                                                itemBuilder: (context) {
+                                                  return [
+                                                    const PopupMenuItem(
+                                                      value: 0,
+                                                      child: Text('Edit'),
+                                                    ),
+                                                    const PopupMenuItem(
+                                                      value: 1,
+                                                      child: Text('Hapus', style: TextStyle(color: Colors.red),),
+                                                    ),
+                                                  ];
+                                                },
+                                                onSelected: (value) async {
+                                                  switch (value) {
+                                                    case 0:
+                                                      final NavigatorState navigatorContext = Navigator.of(context);
 
-                                                    DaftarBelanja? result = await navigatorContext.push(MaterialPageRoute(builder: (context) => EditDaftarBelanja(daftarBelanja: daftarBelanja)));
+                                                      DaftarBelanja? result = await navigatorContext.push(MaterialPageRoute(builder: (context) => EditDaftarBelanja(daftarBelanja: daftarBelanja)));
 
-                                                    if (result != null) {
-                                                      setState(() {
-                                                        data = result.getAttributes();
-                                                      });
-                                                    }
-                                                    break;
-                                                  case 1:
-                                                    bool confirmation = await showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          title: const Text('Hapus Daftar Tabel'),
-                                                          content: const Text('Apakah yakin ingin menghapus ?'),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(context, false);
-                                                              },
-                                                              child: const Text('Tidak'),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(context, true);
-                                                              },
-                                                              child: const Text('Ya'),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-
-                                                    if (confirmation) {
-                                                      try {
-                                                        bool result = await daftarBelanja.delete();
-
-                                                        if (result) {
-                                                          List<DaftarBelanja> newListDaftarBelanja = await widget.user.getAllDaftarBelanja();
-
-                                                          setState(() {
-                                                            listDaftarBelanja = newListDaftarBelanja;
-                                                          });
-                                                        }
-                                                      } catch (e) {
-                                                        e.toString();
+                                                      if (result != null) {
+                                                        setState(() {
+                                                          data = result.getAttributes();
+                                                        });
                                                       }
-                                                    }
-                                                    break;
-                                                }
-                                              },
-                                            ),
-                                          ],
+                                                      break;
+                                                    case 1:
+                                                      bool? confirmation = await showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: const Text('Hapus Daftar Tabel'),
+                                                            content: const Text('Apakah yakin ingin menghapus ?'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context, false);
+                                                                },
+                                                                child: const Text('Tidak'),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context, true);
+                                                                },
+                                                                child: const Text('Ya'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+
+                                                      if (confirmation == true) {
+                                                        try {
+                                                          bool result = await daftarBelanja.delete();
+
+                                                          if (result) {
+                                                            List<DaftarBelanja> newListDaftarBelanja = await widget.user.getAllDaftarBelanja();
+
+                                                            setState(() {
+                                                              listDaftarBelanja = newListDaftarBelanja;
+                                                            });
+                                                          }
+                                                        } catch (e) {
+                                                          e.toString();
+                                                        }
+                                                      }
+                                                      break;
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          subtitle: Column(
+                                            children: [
+                                              const SizedBox(height: 30),
+                                              const Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Created'),
+                                                  Text('Updated')
+                                                ],
+                                              ),
+                                              const Divider(),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(data[1]),
+                                                  Text(data[2]),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => DaftarBelanjaCommonUser(user: widget.user, daftarBelanja: daftarBelanja)));
+                                          },
                                         ),
-                                        subtitle: Column(
-                                          children: [
-                                            const SizedBox(height: 30),
-                                            const Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text('Created'),
-                                                Text('Updated')
-                                              ],
-                                            ),
-                                            const Divider(),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(data[1]),
-                                                Text(data[2]),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => DaftarBelanjaCommonUser(user: widget.user, daftarBelanja: daftarBelanja)));
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
+                                      );
+                                    },
+                                  )
+                                : Center(child: Text(notifikasiListKosong)),
                               ),
                             ],
                           ),

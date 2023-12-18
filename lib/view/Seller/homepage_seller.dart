@@ -3,45 +3,47 @@ import 'package:daftar_belanja/class/daftar.dart';
 import 'package:daftar_belanja/class/user.dart';
 import 'package:daftar_belanja/view/detail_barang.dart';
 import 'package:daftar_belanja/view/tambah_barang_form.dart';
+import 'package:daftar_belanja/view/user_profile.dart';
 import 'package:flutter/material.dart';
 
-class DaftarBelanjaCommonUser extends StatefulWidget {
-  final CommonUser user;
-  final DaftarBelanja daftarBelanja;
-  const DaftarBelanjaCommonUser({super.key, required this.user, required this.daftarBelanja});
+class HomePageSeller extends StatefulWidget {
+  final Seller seller;
+  final DaftarProduk daftarProduk;
+  const HomePageSeller({super.key, required this.seller, required this.daftarProduk});
 
   @override
-  State<DaftarBelanjaCommonUser> createState() => _DaftarBelanjaCommonUserState();
+  State<HomePageSeller> createState() => _HomePageSellerState();
 }
 
-class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
+class _HomePageSellerState extends State<HomePageSeller> {
+  int _currentPage = 0;
+
   Map dataUser = {};
+
   List<Barang> listBarang = [];
-  String totalHarga = '';
-  int jumlahBarang = 0;
+
   String notifikasiListKosong = '';
 
   @override
   void initState() {
     super.initState();
 
-    dataUser = widget.user.getAllAttributes();
-    widget.daftarBelanja.getAllBarang().then((value) {
-      String harga = widget.daftarBelanja.hitungTotalHarga(value);
-      int jumlah = widget.daftarBelanja.hitungJumlahBarang(value);
+    dataUser = widget.seller.getAllAttributes();
+
+    widget.daftarProduk.getAllBarang().then((value) {
 
       setState(() {
         listBarang = value;
-        totalHarga = harga;
-        jumlahBarang = jumlah;
         notifikasiListKosong = value.isEmpty ? 'Daftar Belanja Masih Kosong' : '';
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: <Widget>[
+          Container(
           color: const Color.fromARGB(255, 89, 231, 111),
           child: Column(
             children: [
@@ -65,8 +67,15 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        Text(
+                          dataUser['Nama Toko'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                          ),
+                        ),
                         const Text(
-                          'Customer',
+                          'Seller',
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -97,7 +106,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "Jumlah Barang",
+                              "Jumlah Produk",
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -107,7 +116,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                               backgroundColor: Colors.black,
                               radius: 15.0,
                               child: Text(
-                                jumlahBarang.toString(),
+                                listBarang.length.toString(),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -133,11 +142,11 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 17.0, horizontal: 20.0),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 17.0, horizontal: 20.0),
                                 child: Text(
-                                  widget.daftarBelanja.namaDaftar,
-                                  style: const TextStyle(
+                                  'Daftar Produk',
+                                  style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -145,12 +154,16 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                               ),
                               Expanded(
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.only(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(20.0),
                                       topRight: Radius.circular(20.0),
                                     ),
-                                    border: Border.all()
+                                    border: Border(
+                                      top: BorderSide(),
+                                      right: BorderSide(),
+                                      left: BorderSide(),
+                                    ),
                                   ),
                                   margin: const EdgeInsets.symmetric(horizontal: 20),
                                   child: (listBarang.isNotEmpty) ?
@@ -219,7 +232,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          "Jumlah: ${data['Kuantitas']}",
+                                                          "Stok: ${data['Kuantitas']}",
                                                           style: const TextStyle(
                                                             fontSize: 13,
                                                           ),
@@ -230,7 +243,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                                               context: context,
                                                               builder: (context) {
                                                                 return AlertDialog(
-                                                                  title: const Text('Hapus Barang'),
+                                                                  title: const Text('Hapus Produk'),
                                                                   content: const Text('Apakah yakin ingin menghapus ?'),
                                                                   actions: [
                                                                     TextButton(
@@ -255,15 +268,10 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                                                 bool result = await barang.delete();
 
                                                                 if (result) {
-                                                                  List<Barang> newListBarang = await widget.daftarBelanja.getAllBarang();
-
-                                                                  String harga = widget.daftarBelanja.hitungTotalHarga(newListBarang);
-                                                                  int jumlah = widget.daftarBelanja.hitungJumlahBarang(newListBarang);
+                                                                  List<Barang> newListBarang = await widget.daftarProduk.getAllBarang();
 
                                                                   setState(() {
                                                                     listBarang = newListBarang;
-                                                                    totalHarga = harga;
-                                                                    jumlahBarang = jumlah;
                                                                   });
                                                                 }
                                                               } catch (e) {
@@ -296,98 +304,6 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                   : Center(child: Text(notifikasiListKosong)),
                                 ),
                               ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                                padding: const EdgeInsets.only(
-                                  top: 10.0,
-                                  left: 20.0,
-                                  right: 20.0,
-                                  bottom: 5.0,
-                                ),
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(),
-                                    left: BorderSide(),
-                                    bottom: BorderSide(),
-                                  ),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(20.0),
-                                    bottomRight: Radius.circular(20.0),
-                                  ),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      'Total Harga',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(totalHarga),
-                                        const SizedBox(height: 10.0),
-                                        OutlinedButton.icon(
-                                          onPressed: () async {
-                                            final NavigatorState navigatorContext = Navigator.of(context);
-
-                                            bool? confirmation = await showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text('Tambah Barang Dari Mana ?'),
-                                                  content: const Text('Apakah ingin menambah barang dari produk milik seller atau isi sendiri ?'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context, false);
-                                                      },
-                                                      child: const Text('Isi Sendiri'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context, true);
-                                                      },
-                                                      child: const Text('Produk dari Seller'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-
-                                            if (confirmation == false) {
-                                              bool? result = await navigatorContext.push(MaterialPageRoute(builder: (context) => TambahBarangForm(daftar: widget.daftarBelanja)));
-
-                                              if (result == true) {
-                                                List<Barang> newListBarang = await widget.daftarBelanja.getAllBarang();
-                                                
-                                                String harga = widget.daftarBelanja.hitungTotalHarga(newListBarang);
-                                                int jumlah = widget.daftarBelanja.hitungJumlahBarang(newListBarang);
-
-                                                setState(() {
-                                                  listBarang = newListBarang;
-                                                  totalHarga = harga;
-                                                  jumlahBarang = jumlah;
-                                                });
-                                              }
-                                            }
-                                          },
-                                          icon: const Icon(Icons.add),
-                                          label: const Text('Tambah'),
-                                          style: OutlinedButton.styleFrom(
-                                            // elevation: 0.0,
-                                            side: BorderSide.none,
-                                            backgroundColor: Colors.black,
-                                            foregroundColor: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         ),
@@ -399,6 +315,80 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
             ],
           ),
         ),
+        UserProfile(user: widget.seller),
+      ][_currentPage],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24.0),
+            topRight: Radius.circular(24.0)
+          ),
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade400, width: 1.5),
+          ),
+        ),
+        child: NavigationBar(
+          selectedIndex: _currentPage,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(
+                Icons.home_outlined,
+                size: 40.0,
+              ),
+              selectedIcon: Icon(
+                Icons.home,
+                size: 40.0,
+              ),
+              label: 'Home'
+            ),
+            NavigationDestination(
+              icon: Icon(
+                Icons.person_outline,
+                size: 40.0,
+              ),
+              selectedIcon: Icon(
+                Icons.person,
+                size: 40.0,
+              ),
+              label: 'User'
+            ),
+          ],
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          elevation: 0.0,
+          backgroundColor: Colors.white10,
+          indicatorColor: Colors.transparent,
+          onDestinationSelected: (index) {
+          setState(() {
+            _currentPage = index;
+          });
+          },
+        ),
+      ),
+      floatingActionButton: _currentPage == 0 ? FloatingActionButton(
+        onPressed: () async {
+          final NavigatorState navigatorContext = Navigator.of(context);
+
+          try {
+            bool? result = await navigatorContext.push(MaterialPageRoute(builder: (context) => TambahBarangForm(daftar: widget.daftarProduk)));
+
+            if (result == true) {
+              List<Barang> newListBarang = await widget.daftarProduk.getAllBarang();
+
+              setState(() {
+                listBarang = newListBarang;
+              });
+            }
+          } catch (e) {
+            e.toString();
+          }
+        },
+        tooltip: 'Tambah Produk',
+        foregroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 101, 255, 125),
+        elevation: 0,
+        child: const Icon(Icons.add, size: 40.0),
+      ) : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

@@ -1,5 +1,7 @@
+import 'package:daftar_belanja/class/daftar.dart';
 import 'package:daftar_belanja/class/user.dart';
 import 'package:daftar_belanja/view/CommonUser/homepage_commonuser.dart';
+import 'package:daftar_belanja/view/Seller/homepage_seller.dart';
 import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 
@@ -128,6 +130,14 @@ class _LoginFormState extends State<LoginForm> {
                             setState(() {
                               _errorText = e.toString();
                             });
+                          }
+                        } else if (widget.seller != null) {
+                          try {
+                            DaftarProduk daftarProduk = await widget.seller!.login(_email, _password);
+
+                            navigatorContext.pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomePageSeller(seller: widget.seller!, daftarProduk: daftarProduk)), (route) => false);
+                          } catch (e) {
+                            _errorText = e.toString();
                           }
                         }
                       }

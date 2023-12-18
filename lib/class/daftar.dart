@@ -59,7 +59,7 @@ abstract class Daftar {
   }
 
   Future<List<Barang>> getAllBarang();
-  Future<bool> tambahBarang(String nama, int harga, String deskripsi, String kategori, int kuantitas, [String? url]);
+  Future<bool> tambahBarang(String nama, int harga, String? deskripsi, String kategori, int kuantitas, [String? url]);
   Future<bool> update(String nama);
   Future<bool> delete();
 

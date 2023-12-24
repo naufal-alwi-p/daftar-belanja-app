@@ -1,0 +1,9 @@
+import 'package:mysql1/mysql1.dart';
+
+ConnectionSettings settingsDB = ConnectionSettings(
+  host: /* Your Database Host */,
+  port: /* Your Database Port */,
+  user: /* Your Database User */,
+  password: /* Your Database Password */,
+  db: /* Your Database */
+);

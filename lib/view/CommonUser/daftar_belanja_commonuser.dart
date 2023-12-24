@@ -1,6 +1,7 @@
 import 'package:daftar_belanja/class/barang.dart';
 import 'package:daftar_belanja/class/daftar.dart';
 import 'package:daftar_belanja/class/user.dart';
+import 'package:daftar_belanja/view/CommonUser/pilih_seller.dart';
 import 'package:daftar_belanja/view/detail_barang.dart';
 import 'package:daftar_belanja/view/tambah_barang_form.dart';
 import 'package:flutter/material.dart';
@@ -370,7 +371,23 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                               },
                                             );
 
-                                            if (confirmation == false) {
+                                            if (confirmation == true) {
+                                              bool? result = await navigatorContext.push(MaterialPageRoute(builder: (context) => PilihSeller(daftarBelanja: widget.daftarBelanja)));
+
+                                              if (result == true ) {
+                                                List<Barang> newListBarang = await widget.daftarBelanja.getAllBarang();
+                                                
+                                                String harga = widget.daftarBelanja.hitungTotalHarga(newListBarang);
+                                                int jumlah = widget.daftarBelanja.hitungJumlahBarang(newListBarang);
+
+                                                setState(() {
+                                                  listBarang = newListBarang;
+                                                  totalHarga = harga;
+                                                  jumlahBarang = jumlah;
+                                                  notifikasiListKosong = listBarang.isEmpty ? 'Daftar Belanja Kosong' : '';
+                                                });
+                                              }
+                                            } else if (confirmation == false) {
                                               bool? result = await navigatorContext.push(MaterialPageRoute(builder: (context) => TambahBarangForm(daftar: widget.daftarBelanja)));
 
                                               if (result == true) {

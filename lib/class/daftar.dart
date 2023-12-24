@@ -278,7 +278,7 @@ class DaftarProduk extends Daftar {
 
       if (hasil.affectedRows == 1) {
         _namaDaftar = nama;
-        _dateUpdated = _dateParse(DateTime.parse(date.fields[0].toString()));
+        _dateUpdated = _dateParse(DateTime.parse(date.first.first.toString()));
 
         return true;
       } else if (hasil.affectedRows == 0) {

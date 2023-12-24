@@ -309,6 +309,7 @@ class _RegisterFormState extends State<RegisterForm> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 30.0),
                   const Text(
                     'Register',
                     style: TextStyle(

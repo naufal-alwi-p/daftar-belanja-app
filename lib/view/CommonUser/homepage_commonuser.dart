@@ -320,6 +320,10 @@ class _HomePageCommonUserState extends State<HomePageCommonUser> {
           onDestinationSelected: (index) {
           setState(() {
             _currentPage = index;
+
+            if (_currentPage == 0) {
+              dataUser = widget.user.getAllAttributes();
+            }
           });
           },
         ),

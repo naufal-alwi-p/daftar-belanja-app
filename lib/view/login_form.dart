@@ -137,7 +137,9 @@ class _LoginFormState extends State<LoginForm> {
 
                             navigatorContext.pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomePageSeller(seller: widget.seller!, daftarProduk: daftarProduk)), (route) => false);
                           } catch (e) {
-                            _errorText = e.toString();
+                            setState(() {
+                              _errorText = e.toString();
+                            });
                           }
                         }
                       }

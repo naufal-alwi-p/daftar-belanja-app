@@ -34,7 +34,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
         listBarang = value;
         totalHarga = harga;
         jumlahBarang = jumlah;
-        notifikasiListKosong = value.isEmpty ? 'Daftar Belanja Masih Kosong' : '';
+        notifikasiListKosong = value.isEmpty ? 'Daftar Belanja Kosong' : '';
       });
     });
   }
@@ -164,8 +164,20 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                         return ListTile(
                                           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                           minVerticalPadding: 2,
-                                          onTap: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBarang(barang: barang)));
+                                          onTap: () async {
+                                            await Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBarang(barang: barang)));
+
+                                            List<Barang> newListBarang = await widget.daftarBelanja.getAllBarang();
+
+                                            String harga = widget.daftarBelanja.hitungTotalHarga(newListBarang);
+                                            int jumlah = widget.daftarBelanja.hitungJumlahBarang(newListBarang);
+
+                                            setState(() {
+                                              listBarang = newListBarang;
+                                              totalHarga = harga;
+                                              jumlahBarang = jumlah;
+                                              notifikasiListKosong = listBarang.isEmpty ? 'Daftar Belanja Kosong' : '';
+                                            });
                                           },
                                           title: Text(
                                             data['Nama'],
@@ -264,6 +276,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                                                     listBarang = newListBarang;
                                                                     totalHarga = harga;
                                                                     jumlahBarang = jumlah;
+                                                                    notifikasiListKosong = listBarang.isEmpty ? 'Daftar Belanja Kosong' : '';
                                                                   });
                                                                 }
                                                               } catch (e) {
@@ -370,6 +383,7 @@ class _DaftarBelanjaCommonUserState extends State<DaftarBelanjaCommonUser> {
                                                   listBarang = newListBarang;
                                                   totalHarga = harga;
                                                   jumlahBarang = jumlah;
+                                                  notifikasiListKosong = listBarang.isEmpty ? 'Daftar Belanja Kosong' : '';
                                                 });
                                               }
                                             }

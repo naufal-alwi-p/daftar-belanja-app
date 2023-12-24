@@ -34,7 +34,7 @@ class _HomePageSellerState extends State<HomePageSeller> {
 
       setState(() {
         listBarang = value;
-        notifikasiListKosong = value.isEmpty ? 'Daftar Belanja Masih Kosong' : '';
+        notifikasiListKosong = value.isEmpty ? 'Daftar Produk Kosong' : '';
       });
     });
   }
@@ -177,8 +177,15 @@ class _HomePageSellerState extends State<HomePageSeller> {
                                         return ListTile(
                                           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                           minVerticalPadding: 2,
-                                          onTap: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBarang(barang: barang)));
+                                          onTap: () async {
+                                            await Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBarang(barang: barang)));
+
+                                            List<Barang> newListBarang = await widget.daftarProduk.getAllBarang();
+
+                                            setState(() {
+                                              listBarang = newListBarang;
+                                              notifikasiListKosong = listBarang.isEmpty ? 'Daftar Produk Kosong' : '';
+                                            });
                                           },
                                           title: Text(
                                             data['Nama'],
@@ -272,6 +279,7 @@ class _HomePageSellerState extends State<HomePageSeller> {
 
                                                                   setState(() {
                                                                     listBarang = newListBarang;
+                                                                    notifikasiListKosong = listBarang.isEmpty ? 'Daftar Produk Kosong' : '';
                                                                   });
                                                                 }
                                                               } catch (e) {
@@ -315,7 +323,7 @@ class _HomePageSellerState extends State<HomePageSeller> {
             ],
           ),
         ),
-        UserProfile(user: widget.seller),
+        UserProfile(seller: widget.seller),
       ][_currentPage],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -360,6 +368,10 @@ class _HomePageSellerState extends State<HomePageSeller> {
           onDestinationSelected: (index) {
           setState(() {
             _currentPage = index;
+
+            if (_currentPage == 0) {
+              dataUser = widget.seller.getAllAttributes();
+            }
           });
           },
         ),
@@ -376,6 +388,7 @@ class _HomePageSellerState extends State<HomePageSeller> {
 
               setState(() {
                 listBarang = newListBarang;
+                notifikasiListKosong = listBarang.isEmpty ? 'Daftar Produk Kosong' : '';
               });
             }
           } catch (e) {

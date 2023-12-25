@@ -209,6 +209,10 @@ class _DetailProdukSellerState extends State<DetailProdukSeller> {
                             validator: (value) {
                               if (!validator.isNumeric(value!)) {
                                 return 'Isi dengan Angka';
+                              } else if (int.parse(value) < 1) {
+                                return 'Jumlah Barang Minimal Satu';
+                              } else if (int.parse(value) > dataBarang['Kuantitas']) {
+                                return 'Stok Tidak Cukup';
                               } else {
                                 return null;
                               }

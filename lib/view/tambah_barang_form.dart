@@ -195,6 +195,8 @@ class _TambahBarangFormState extends State<TambahBarangForm> {
                           validator: (value) {
                             if (!validator.isNumeric(value!)) {
                               return 'Isi dengan Angka';
+                            } else if (int.parse(value) < 1) {
+                              return 'Jumlah Barang Minimal Satu';
                             } else {
                               return null;
                             }

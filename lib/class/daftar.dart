@@ -251,7 +251,7 @@ class DaftarProduk extends Daftar {
 
     await koneksi.close();
 
-    if (hasil.insertId != null && hasil2.affectedRows == 0) {
+    if (hasil.insertId != null && hasil2.affectedRows == 1) {
       _dateUpdated = _dateParse(update);
       return true;
     } else {

@@ -31,10 +31,10 @@ class _EditDetailBarangFormState extends State<EditDetailBarangForm> {
 
     _nama = dataBarang['Nama'];
     _harga = widget.barang.harga.toString();
-    _deskripsi = dataBarang['Deskripsi'];
+    _deskripsi = (dataBarang['Deskripsi'] == '-') ? '' : dataBarang['Deskripsi'];
     _kategori = dataBarang['Kategori'];
     _kuantitas = dataBarang['Kuantitas'].toString();
-    _url = dataBarang['URL'];
+    _url = (dataBarang['URL'] == '-') ? '' : dataBarang['URL'];
   }
 
   @override
@@ -62,7 +62,7 @@ class _EditDetailBarangFormState extends State<EditDetailBarangForm> {
                     child: Column(
                       children: [
                         TextFormField(
-                          initialValue: dataBarang['Nama'],
+                          initialValue: _nama,
                           onChanged: (value) => _nama = value,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -136,7 +136,7 @@ class _EditDetailBarangFormState extends State<EditDetailBarangForm> {
                         ),
                         const SizedBox(height: 30.0),
                         TextFormField(
-                          initialValue: dataBarang['Deskripsi'],
+                          initialValue: _deskripsi,
                           onChanged: (value) => _deskripsi = value,
                           decoration: InputDecoration(
                               label: const Text('Deskripsi Barang'),
@@ -166,7 +166,7 @@ class _EditDetailBarangFormState extends State<EditDetailBarangForm> {
                         ),
                         const SizedBox(height: 30.0),
                         TextFormField(
-                          initialValue: dataBarang['Kategori'],
+                          initialValue: _kategori,
                           onChanged: (value) => _kategori = value,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -203,7 +203,7 @@ class _EditDetailBarangFormState extends State<EditDetailBarangForm> {
                         ),
                         const SizedBox(height: 30.0),
                         TextFormField(
-                          initialValue: dataBarang['Kuantitas'].toString(),
+                          initialValue: _kuantitas,
                           onChanged: (value) => _kuantitas = value,
                           validator: (value) {
                             if (!validator.isNumeric(value!)) {
@@ -242,7 +242,7 @@ class _EditDetailBarangFormState extends State<EditDetailBarangForm> {
                         ),
                         const SizedBox(height: 30.0),
                         TextFormField(
-                          initialValue: dataBarang['URL'],
+                          initialValue: _url,
                           onChanged: (value) => _url = value,
                           validator: (value) {
                             if (value!.isNotEmpty && !validator.isURL(value)) {

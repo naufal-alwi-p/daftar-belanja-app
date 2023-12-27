@@ -83,10 +83,10 @@ class Barang {
       if (hasil.affectedRows == 1 && hasil2.affectedRows == 1) {
         _nama = nama;
         _harga = harga;
-        _deskripsi = deskripsi;
+        _deskripsi = (deskripsi == null) ? 'null' : deskripsi;
         _kategori = kategori;
         _kuantitas = kuantitas;
-        _url = url;
+        _url = (url == null) ? 'null' : url;
 
         return true;
       } else if (hasil.affectedRows == 0) {

@@ -193,7 +193,7 @@ class _DetailBarangState extends State<DetailBarang> {
                     ElevatedButton(
                       onPressed: () async {
                         bool? hasil = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditDetailBarangForm(barang: widget.barang)));
-    
+
                         if (hasil == true) {
                           setState(() {
                             dataBarang = widget.barang.showDetail();

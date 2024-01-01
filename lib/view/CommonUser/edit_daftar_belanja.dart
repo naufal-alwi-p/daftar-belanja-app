@@ -14,6 +14,14 @@ class _EditDaftarBelanjaState extends State<EditDaftarBelanja> {
 
   String _namaDaftar = '';
   String _errorText = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _namaDaftar = widget.daftarBelanja.namaDaftar;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
